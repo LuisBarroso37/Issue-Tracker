@@ -1,112 +1,137 @@
 <!DOCTYPE html>
 <html>
-  
   <head>
     <title>Issue Tracker</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/public/style.css">
   </head>
-  
   <body>
     
-    <header>
+    <div class="container">
       <h1>Issue Tracker</h1>
-    </header>
-    
-    <div id='userstories' style='margin-left: 5%; margin-top: 5%'>
-      <h3>User Stories</h3>
-      <ol>
-        <li>Prevent cross site scripting(XSS attack).</li>
-        <li>I can <b>POST</b> <code>/api/issues/{projectname}</code> with form data containing required <i>issue_title</i>, <i>issue_text</i>, <i>created_by</i>, and optional <i>assigned_to</i> and <i>status_text</i>.</li>
-        <li>The object saved (and returned) will include all of those fields (blank for optional no input) and also include <i>created_on</i>(date/time), <i>updated_on</i>(date/time), <i>open</i>(boolean, true for open, false for closed), and <i>_id</i>.</li>
-        <li>I can <b>PUT</b> <code>/api/issues/{projectname}</code> with a <i>_id</i> and any fields in the object with a value to object said object. Returned will be 'successfully updated' or 'could not update '+_id. This should always update <i>updated_on</i>. If no fields are sent return 'no updated field sent'.</li>
-        <li>I can <b>DELETE</b> <code>/api/issues/{projectname}</code> with a <i>_id</i> to completely delete an issue. If no _id is sent return '_id error', success: 'deleted '+_id, failed: 'could not delete '+_id.</li>
-        <li>I can <b>GET</b> <code>/api/issues/{projectname}</code> for an array of all issues on that specific project with all the information for each issue as was returned when posted.</li>
-        <li>I can filter my get request by also passing along any field and value in the query(ie. <code>/api/issues/{project}?open=false</code>). I can pass along as many fields/values as I want.</li>
-        <li>All 11 functional tests are complete and passing.</li>
-      </ol>
-      <br>
-      <h3>Example get usage:</h3>
-      <code>/api/issues/{project}</code><br>
-      <code>/api/issues/{project}?open=true&amp;assigned_to=Joe</code><br>
-      <h3>Example return:</h3>
-      <code>[{"_id":"5871dda29faedc3491ff93bb","issue_title":"Fix error in posting data","issue_text":"When we post data it has an error.","created_on":"2017-01-08T06:35:14.240Z","updated_on":"2017-01-08T06:35:14.240Z","created_by":"Joe","assigned_to":"Joe","open":true,"status_text":"In QA"},...]</code>
-      <br><br>
-      <h2><a href='/apitest/'>EXAMPLE: Go to <i>/apitest/</i> project issues</a></h2>
-    </div>
-    
-    <hr style='margin: 50px'>
-    <div id='testui' style='margin-left: 5%'>
-      <h2 style="text-align: left">API Tests:</h2>
-      <h3>Submit issue on <i>apitest</i></h3>
-      <form id="testForm" class="border">
-        <input type="text" name="issue_title" placeholder="*Title" style="width: 100px" required=''><br>
-        <textarea type="text" name="issue_text" placeholder="*Text" style="width: 100px" required=''></textarea><br>
-        <input type="text" name="created_by" placeholder="*Created by" style="width: 100px" required=''><br>
-        <input type="text" name="assigned_to" placeholder="(opt)Assigned to" style="width: 100px"><br>
-        <input type="text" name="status_text" placeholder="(opt)Status text" style="width: 100px"><br>
+      <h3 class="subtitle">Submit issue on <i>/apitest</i></h3>
+      <form id="issue-submit-form" class="border">
+        <input type="text" name="issue_title" placeholder="Title" required>
+        <textarea id="issue-submit_issue_text" type="text" name="issue_text" placeholder="Tell us your issue..." required></textarea>
+        <input type="text" name="created_by" placeholder="Created by" required>
+        <input type="text" name="assigned_to" placeholder="Assigned to">
+        <input type="text" name="status_text" placeholder="Status text">
         <button type="submit">Submit Issue</button>
+        <code id="issue-submit-response"></code>
       </form><br>
-      <h3>Update issue on <i>apitest</i> (Change any or all to update issue on the _id supplied)</h3>
-      <form id="testForm2" class="border">
-        <input type="text" name="_id" placeholder="*_id" style="width: 100px" required=''><br>
-        <input type="text" name="issue_title" placeholder="(opt)Title" style="width: 100px"><br>
-        <textarea type="text" name="issue_text" placeholder="(opt)Text" style="width: 100px"></textarea><br>
-        <input type="text" name="created_by" placeholder="(opt)Created by" style="width: 100px"><br>
-        <input type="text" name="assigned_to" placeholder="(opt)Assigned to" style="width: 100px"><br>
-        <input type="text" name="status_text" placeholder="(opt)Status text" style="width: 100px"><br>
-        <label><input type="checkbox" name="open" value=false> Check to close issue</label><br>
+      
+      <h3 class="subtitle">Update issue on <i>/apitest</i></h3>
+      <form id="update-issue-form" class="border">
+        <input type="text" name="_id" placeholder="ID" required>
+        <input type="text" name="issue_title" placeholder="Title">
+        <textarea type="text" name="issue_text" placeholder="Tell us your issue..."></textarea>
+        <input type="text" name="created_by" placeholder="Created by">
+        <input type="text" name="assigned_to" placeholder="Assigned to">
+        <input type="text" name="status_text" placeholder="Status text">
+        <label><input type="checkbox" name="open" value="false"> Close issue</label>
         <button type="submit">Submit Issue</button>
+        <code id="update-issue-response"></code>
       </form><br>
-      <h3>Delete issue on <i>apitest</i></h3>
-      <form id="testForm3" class="border">
-        <input type="text" name="_id" placeholder="_id" style="width: 100px" required=''><br>
+      
+      <h3 class="subtitle">Delete issue on <i>/apitest</i></h3>
+      <form id="delete-issue-form" class="border">
+        <input id="delete-id" type="text" name="_id" placeholder="ID" required>
         <button type="submit">Delete Issue</button>
       </form>
-      <code id='jsonResult'></code>
+      <code id="jsonResult"></code>
     </div>
-    <hr style='margin: 50px; margin-top: 200px'>
-    <!-- Your web-app is https, so your scripts need to be too -->
-    <script src="https://code.jquery.com/jquery-2.2.1.min.js"
-            integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00="
-            crossorigin="anonymous"></script>
+    
     <script>
-      $(function() {
-        $('#testForm').submit(function(e) {
-          $.ajax({
-            url: '/api/issues/apitest',
-            type: 'post',
-            data: $('#testForm').serialize(),
-            success: function(data) {
-              $('#jsonResult').text(JSON.stringify(data));
-            }
-          });
-          e.preventDefault();
+      issueSubmitForm = document.querySelector('#issue-submit-form')
+      issueSubmitForm.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        let inputValues = {}
+        Object.keys(issueSubmitForm.elements).forEach(key => {
+          let element = issueSubmitForm.elements[key];
+          if (element.type !== 'submit') {
+            inputValues[element.name] = element.value;
+          }
         });
-        $('#testForm2').submit(function(e) {
-          $.ajax({
-            url: '/api/issues/apitest',
-            type: 'put',
-            data: $('#testForm2').serialize(),
-            success: function(data) {
-              $('#jsonResult').text(JSON.stringify(data));
-            }
-          });
-          e.preventDefault();
+        
+        fetch('/api/issues/apitest', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  issue_title: inputValues['issue_title'],
+                  issue_text: inputValues['issue_text'],
+                  created_by: inputValues['created_by'],
+                  assigned_to: inputValues['assigned_to'],
+                  status_text: inputValues['status_text']
+                })
+        })
+        .then(res => res.json())
+        .then(data => {
+          document.querySelector('#issue-submit-response').innerText = JSON.stringify(data)
+        })
+      })
+        
+      updateIssueForm = document.querySelector('#update-issue-form')
+      updateIssueForm.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        let inputValues = {}
+        Object.keys(updateIssueForm.elements).forEach(key => {
+          let element = updateIssueForm.elements[key];
+          if (element.type == 'checkbox' && element.checked) {
+            inputValues[element.name] = element.value;
+          } else if (element.type == 'checkbox' && !element.checked) {
+            
+          } else if (element.type !== 'submit') {
+            inputValues[element.name] = element.value;
+          }
         });
-        $('#testForm3').submit(function(e) {
-          $.ajax({
-            url: '/api/issues/apitest',
-            type: 'delete',
-            data: $('#testForm3').serialize(),
-            success: function(data) {
-              $('#jsonResult').text(JSON.stringify(data));
-            }
-          });
-          e.preventDefault();
-        });
-      });
+        
+        fetch('/api/issues/apitest', {
+               method: 'PUT',
+               headers: {
+                 'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({
+                 _id: inputValues['_id'],
+                 issue_title: inputValues['issue_title'],
+                 issue_text: inputValues['issue_text'],
+                 created_by: inputValues['created_by'],
+                 assigned_to: inputValues['assigned_to'],
+                 status_text: inputValues['status_text'],
+                 open: inputValues['open']
+               })
+        })
+        .then(res => res.json())
+        .then(data => {
+          document.querySelector('#update-issue-response').innerText = JSON.stringify(data)
+        })
+      })
+      
+      deleteIssueForm = document.querySelector('#delete-issue-form')
+      deleteIssueForm.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        let id = document.querySelector('#delete-id').value;
+        console.log(id)
+        fetch('/api/issues/apitest', {
+               method: 'DELETE',
+               headers: {
+                 'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({
+                 _id: id
+               })
+        })
+        .then(res => res.json())
+        .then(data => {
+          document.querySelector('#jsonResult').innerText = JSON.stringify(data)
+        })
+      })
    </script>
   </body>
 </html>

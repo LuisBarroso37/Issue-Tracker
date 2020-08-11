@@ -88,7 +88,7 @@ module.exports = app => {
           
           let issue = await Issue.save();
           
-          res.send(issue);
+          res.json(issue);
         
         } catch (err) {
           console.error(err);
@@ -112,7 +112,7 @@ module.exports = app => {
       }
       
       if (Object.keys(update).length == 0) {
-        return res.send('No updated fields sent');
+        return res.json('No updated fields sent');
       } else {
         update = {...update, updated_on: new Date()};
       }
@@ -120,11 +120,11 @@ module.exports = app => {
       try { 
         let issue = await issueModel.findOneAndUpdate({_id}, {$set: update}, {new: true, useFindAndModify: false});
           
-        res.send('Successfully updated');
+        res.json('Successfully updated');
       
       } catch (err) {
         console.error(err);
-        res.send('Could not update - ' + _id);
+        res.json('Could not update - ' + _id);
       }
     })
     
@@ -135,14 +135,14 @@ module.exports = app => {
       let _id = req.body._id;
     
       if (!_id) {
-        return res.send('_id error');
+        return res.json('_id error');
       } else {
         issueModel.findOneAndRemove({_id})
         .then(doc => {
-          res.send('Deleted - ' + _id);
+          res.json('Deleted - ' + _id);
         })
         .catch(err => {
-          res.send('Could not delete - ' + _id);
+          res.json('Could not delete - ' + _id);
         })
       }
     });

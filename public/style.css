@@ -1,17 +1,102 @@
 * {
-  margin: 0px;
-  padding: 0px;
+  box-sizing: border-box;
 }
 
 body {
-  padding: 10px;
+  font-family: Roboto, sans-serif;
+  margin: 25px;
+  color: #222;
+  background-color: #93A8AC;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+h1 {
+  text-align: center;
+  color: #3e3a31;
+}
+
+.container {
+  width: 600px;
+}
+
+.subtitle {
+  color: #3e3a31;
+  font-size: 1.5rem;
+  position: relative;
+  top: 10px;
+  display: block;
+  text-align: left;
+}
+
+form {
+  margin-bottom: 25px;
+  padding: 1em 2em 1em 2em;
+  background-color: #807864;
+  width: 100%;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+input[type=text], textarea {
+  display: block;
+  margin-bottom: 1.25em;
+  padding: .25em .5em;
+  width: 100%;
+  border: 1px solid lightgrey;
+  border-radius: .3em;
+  font-size: 1rem;
+  font-family: sans-serif;
+  box-shadow: inset 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+textarea {
+  background-image: url("https://findicons.com/files/icons/1583/silk_companion_1/16/asterisk_red.png");
+  background-repeat: no-repeat;
+  background-position: 98% 10%;
+  background-size: 0.5em;
+  height: 200px;
+}
+
+input[required] {
+  background-image: url("https://findicons.com/files/icons/1583/silk_companion_1/16/asterisk_red.png");
+  background-repeat: no-repeat;
+  background-position: 98% 50%;
+  background-size: 0.5em; 
+}
+
+input[type=checkbox] {
+  transform: scale(1.5);
+  margin-bottom: 1.25em;
+  
+}
+
+button {
+  font-size: 16px;
+  border-radius: 3px;
+  background-color: #e6e6e6;
+  border: 1px solid #e6e6e6;
+  width: 100px;
+  margin: 0 auto;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+button:hover {
+  background-color: #bfbfbf;
+  border: 1px #1a1a1a solid;
 }
 
 .issue {
-  margin: 20px;
+  margin: 20px 0px;
   padding: 5px;
-  width: 60%;
+  width: 100%;
   border: 2px solid black;
+  text-align: center;
+  background-color: white;
 }
 
 .closed {
